@@ -2,6 +2,18 @@ body {
     font-family: Arial;
 }
 
-h1 {
+h1, h2, h3 {
     text-align: center;
+}
+.column {
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+    flex-wrap: nowrap;
+}
+.column1 {
+    flex: 50%;
+}
+.column2 {
+    flex: 50%;
 }
