@@ -17,3 +17,6 @@ h1, h2, h3 {
 .column2 {
     flex: 50%;
 }
+.bars{
+    fill: #4682b4;
+}
