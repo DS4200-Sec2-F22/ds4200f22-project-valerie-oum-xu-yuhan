@@ -6,22 +6,43 @@
     <script type="text/javascript" src="js/d3.v6.1.1/d3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 
-    <title>TODO: Add short title here</title>
+    <title>Cab price predictor</title>
 </head>
 
 
 <body>
 
-    <h1>TODO: Add project title here</h1>
+    <h1>Cab price predictor</h1>
 
     <div>
         <h2>Motivation</h2>
-        TODO: Add motivation / use case here 
+        <p>
+            Uber and Lyft have changed the face of taxi ridership, making it more convenient and comfortable for riders. But there are times when customers are left unsatisfied because of the shortage of vehicles which ultimately leads a surge in prices, leaving the customers exploited. Prices for rides for similar distances are vastly different owing to different factors like weather, time, demand/ supply. It is tedious for a single consumer to take into account all of these factors and optimize their rides, owing to the limited amount of data that they directly have access to. We aim to help all cab riders by providing comprhensive visualizations about the relationships of prices with all the different factors. This tool would help the user decide an optimal time to book their ride depending on the price that they are willing to pay. We aim to consolidate data from a range of different users and create visulaizations which would help users get direct access to processed data. We attempted to analyze cab data and weather data together to estimate the proce of trips per borough due to changing weather conditions. Multiple models were built to predict the price due to the variation in weather. 
+
+            The visualization tool would display comprehensive information by providing different prices ranges for different values of all the factors combined. It would mostly like contain a scenario that the user is trying to book a cab in, meaning it would have some data that is similar to the current scenario of the user like rain level, temperature, time etc, which makes it easy for the user to get an expected price for a particular time in the future. The visualization would also help the user evaluate which cab service would be cheaper based the factors. 
+
+            At the top of the tool it would display an overview of a time series which shows the different locations with respect to time. The visualization would also contain an interactive map of boston to give a spatial idea about the distance that they wish to travel. The user can brush over any region of the time series visualization to which it would display different factors according to what the user selects, they could choose to have rain level with respect to price, or temperature, or filter out certain locations. 
+        </p>
     </div>
 
     <div>
         <h2>Background</h2>
-        TODO: Add link to report, demo video, link to data etc. here  
+        <h3>Data</h3>
+        <p>
+            The tool uses 2 data sets linked below and presents several factors like rain, temperature, time, modeling their relationship with the price of the ride as described in the use case. The data was found out after extensive search for datasets online that are public by cab companies to gain primary data that is directly collected by publisher. However, due to privacy concerns we found out that uber and lyft does not disclose any of their data which is why we had to use secondary data that was extracted by kaggle after surveys and using some form of apis. There are certain ethical issues related to the data considering the way in which the data is collected. While, all the other data exceot price was directly collected which makes it correct, the prices are just reasonable estimates through machine learning algorithm due to which there needs to be kept a certain margin of error. After looking at all the possible options, we chose to use a kaggle data set since, it had all the factor and a large amount of entries. 
+
+            We needed to process the data before we could use it for visualizations because it was not uniform. The rain column had null values which was supposed to mean it did not rain. They were changed to 0 so that they could be put on the visualization as quatitative data. The prices also had certain missing values. We removed the rows which had missing values for prices because that was the most important factor and estimating that before creating a visualization defeat the purpose of visulaization. Finally, the time values were in the form of time stamp so they were converted to date times. All of this processing was done in python. 
+        </p>
+        <h4>Cab data</h4>
+        <ul>
+            <li>
+                <a href="https://www.kaggle.com/datasets/ravi72munde/uber-lyft-cab-prices">Uber and lyft prices</a>
+            </li>
+        </ul>
+        <p>
+            
+        </p>
+        
     </div>
 
     <div>
@@ -47,7 +68,17 @@
 
     <div>
         <h2>Acknowledgements</h2>
-        TODO: Cite resources used here   
+        TODO: Cite resources used here  
+        <p>
+            <ul>
+                <li><a href="https://d3-graph-gallery.com/graph/interactivity_brush.html">brush tutorials</a></li>
+                <li><a href="https://blog.risingstack.com/d3-js-tutorial-bar-charts-with-javascript/">bar chart tutorials part 1</a></li>
+                <li><a href="https://www.tutorialspoint.com/d3js/d3js_working_example.htm#:~:text=D3.js%20-%20Working%20Example%201%20%3Cstyle%3E%20.bar%20%7B,height%20%3D%20svg.attr%28%22height%22%29%20-%20margin%3B%20%3C%2Fscript%3E%20More%20items">bar chart working example</a></li>
+                <li><a href="https://www.w3schools.com/html/">html help</a></li>
+                <li><a href="https://www.w3schools.com/w3css/defaulT.asp">css help</a></li>
+                <li><a href="https://www.w3schools.com/js/">javascript help</a></li>
+            </ul>
+        </p> 
     </div>
 
 
