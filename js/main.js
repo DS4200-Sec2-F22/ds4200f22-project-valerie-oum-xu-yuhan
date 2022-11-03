@@ -1,8 +1,8 @@
 // First, we need a frame
-const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
+const MARGINS = { left: 40, right: 60, top: 0, bottom: 100 };
 
-const FRAME_HEIGHT = 500;
-const FRAME_WIDTH = 500;
+const FRAME_HEIGHT = 600;
+const FRAME_WIDTH = 800;
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 const MAP_HEIGHT = 600;
@@ -48,7 +48,7 @@ function buildPlots() {
             .padding(0.4);
         const yScale = d3.scaleLinear()
             .domain([0, d3.max(data, function (d) { return d.rain; }) + 1])
-            .range([VIS_HEIGHT, 100]);
+            .range([VIS_HEIGHT, 0]);
 
         FRAME2.selectAll("bars")
             .data(data)
@@ -56,7 +56,7 @@ function buildPlots() {
             .append("rect")
             .attr("x", (d) => { return (xScale(d.location) + MARGINS.left); })
             .attr("y", (d) => { return (yScale(d.rain) + MARGINS.top); })
-            .attr("height", VIS_HEIGHT - yScale(50))
+            .attr("height", (d) => { return (VIS_HEIGHT - yScale(d.rain)); })
             .attr("width", xScale.bandwidth())
             .style("fill", function (d) { return Barcolor(d.location) })
             .attr('class', 'bar');
@@ -66,13 +66,23 @@ function buildPlots() {
         FRAME2.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
             .call(d3.axisBottom(xScale))
-            .attr("font-size", "10px");
+            .attr("font-size", "10px")
+            .classed("xAxis", true);
+
+        // rotate x axis text
+        FRAME2.select("g.xAxis")
+        .selectAll("text")
+            .style("text-anchor", "end")
+            .style("font-size", "9.5px")
+            .attr("transform", "rotate(-60)");
+          
 
         // add an yaxis to the vis
         FRAME2.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
             .call(d3.axisLeft(yScale))
             .attr("font-size", "10px");
+
 
         //ToolTip
         const ToolTip = d3.select("#barchart")
