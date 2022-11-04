@@ -85,7 +85,7 @@ function buildPlots() {
 
 
         //ToolTip
-        const ToolTip = d3.select("#barchart")
+        const ToolTip = d3.select(("#right"))
             .append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
