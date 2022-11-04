@@ -37,7 +37,7 @@ function buildPlots() {
     //read data from the file
     d3.csv("data/weather_data.csv").then((data) => {
         //checking the data prints to the console
-        // console.log(data)
+        console.log(data)
 
         const Barcolor = d3.scaleOrdinal()
             .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "HayMarket Square", "North End", "North Station", "Northeastern University", "South Station", "Theatre Distrcit", "West End"])
@@ -130,7 +130,7 @@ function buildPlots() {
     d3.json("data/Boston.json")
     .then(data => {
       // data.features = data.features.filter( function(d){return d.properties.name=="USA"} );
-      console.log(data.features);
+      // console.log(data.features);
 
       // Draw the map
       g.selectAll("path")
@@ -141,7 +141,6 @@ function buildPlots() {
             .attr("d", path)
           .style("stroke", "black")
           .style("opacity", .3);
-      console.log(1)
 
       svg.selectAll("myCircles")
         .data(LOCATION)
@@ -155,7 +154,6 @@ function buildPlots() {
           .attr("stroke", "#69b3a2")
           .attr("stroke-width", 3)
           .attr("fill-opacity", .4);
-      console.log(2)
 
   });
 
