@@ -29,3 +29,6 @@ h1, h2, h3 {
     border-radius: 5px;
     padding: 5px;
 }
+circle {
+    fill: yellow;
+}

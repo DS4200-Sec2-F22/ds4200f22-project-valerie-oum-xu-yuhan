@@ -126,7 +126,6 @@ function buildPlots() {
                 .attr("width", MAP_WIDTH)
                 .attr("height", MAP_HEIGHT); 
     var g = svg.append("g");
-    console.log(1)
     // Load world shape
     d3.json("data/Boston.json")
     .then(data => {
@@ -134,6 +133,7 @@ function buildPlots() {
       // console.log(data.features);
 
       // Draw the map
+      
       g.selectAll("path")
           .data(data.features)
           .enter()
@@ -151,11 +151,7 @@ function buildPlots() {
           .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
           .attr("r", 4)
           .attr("class", "circle")
-          .style("fill", "69b3a2")
-          .attr("stroke", "#69b3a2")
-          .attr("stroke-width", 3)
-          .attr("fill-opacity", .4)
-          .attr("class", (d) => { return d.name });
+          .attr("id", (d) => { return d.name });
 
   });
 
