@@ -2,11 +2,11 @@
 const MARGINS = { left: 40, right: 60, top: 0, bottom: 100 };
 
 const FRAME_HEIGHT = 600;
-const FRAME_WIDTH = 800;
+const FRAME_WIDTH = 750;
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 const MAP_HEIGHT = 600;
-const MAP_WIDTH = 800;
+const MAP_WIDTH = 750;
 
 //Creating the frame for Barcha Location vs Rain Level
 const FRAME2 = d3.select("#right")
@@ -59,7 +59,8 @@ function buildPlots() {
             .attr("height", (d) => { return (VIS_HEIGHT - yScale(d.rain)); })
             .attr("width", xScale.bandwidth())
             .style("fill", function (d) { return Barcolor(d.location) })
-            .attr('class', 'bar');
+            .attr("class", "bar")
+            .attr("id", (d) => { return d.location });
 
 
         // add an xaxis to the vis
@@ -95,7 +96,7 @@ function buildPlots() {
             ToolTip.style("opacity", 1);
         };
         function handleMousemove(event,d){
-            ToolTip.html("Rain: " + d.rain + "<br>Location: " + d.location)
+            ToolTip.html("Rain: " + d.rain + "<br>Location: " + d.location + "<br>Date: " + d.date)
             .style("left", (event.pageX + 10) + "px") //add offset
                                                         // from mouse
             .style("top", (event.pageY - 50) + "px"); 
@@ -153,7 +154,8 @@ function buildPlots() {
           .style("fill", "69b3a2")
           .attr("stroke", "#69b3a2")
           .attr("stroke-width", 3)
-          .attr("fill-opacity", .4);
+          .attr("fill-opacity", .4)
+          .attr("class", (d) => { return d.name });
 
   });
 
