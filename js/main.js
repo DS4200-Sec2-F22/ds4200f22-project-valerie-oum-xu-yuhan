@@ -159,3 +159,81 @@ function buildPlots() {
 };
 
 buildPlots();
+
+
+const margin = {top:20, right: 20, bottom: 30, left: 50};
+const width = 960 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
+
+// parse the date / time
+var parseTime = d3.timeParse("%y-%b-%d");
+
+// set the ranges
+var x = d3.scaleTime().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+// define the area
+var area = d3.area() 
+     .x(function(d) { return x(d.date); })
+     .y0(height)
+     .y1(function(d) { return y(d.price); });
+
+
+const FRAME3 = d3.select("#timeline")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")")
+                .attr("class", "frame");
+
+
+//Read the data
+d3.csv("data/price_data.csv").then(function(data) {
+    
+    // format the data
+        data.forEach(function(d) {
+             d.date = parseTime(d.date);
+             d.price = +d.price;
+             });
+
+   // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.price; })]);
+    
+    // set the gradient
+    FRAME3.append("linearGradient")
+            .attr("id", "area-gradient")
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", 0).attr("y1", y(0))
+            .attr("x2", 0).attr("y2", y(1000))
+            .selectAll("stop")
+            .data([
+                {offset: "0%", color: "red"},
+                {offset: "30%", color: "red"},
+                {offset: "45%", color: "black"},
+                {offset: "55%", color: "black"},
+                {offset: "60%", color: "lawngreen"},
+                {offset: "100%", color: "lawngreen"}])
+            .enter()
+            .append("stop")
+            .attr("offset", function(d) { return d.offset; })
+            .attr("stop-color", function(d) { return d.color; });
+
+    // Add the area.
+    FRAME3.append("path")
+            .data([data])
+            .attr("class", "area")
+            .attr("d", area);
+
+    // Add the X Axis
+    FRAME3.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+    // Add the Y Axis
+    FRAME3.append("g")
+            .call(d3.axisLeft(y));
+
+});
