@@ -35,15 +35,21 @@ const LOCATION = [
 //Build Bar chart
 function buildPlots() {
     //read data from the file
-    d3.csv("data/weather_data.csv").then((data) => {
+    d3.csv("data/data.csv").then((data) => {
         //checking the data prints to the console
         console.log(data)
+
+        non_zero_rain = data.filter(function(d) {return d.rain != 0});
+        q1 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.25), d => d.source)
+        median = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.5), d => d.source)
+        q3 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.75), d => d.source)
+        console.log(q1)
 
         const Barcolor = d3.scaleOrdinal()
             .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "HayMarket Square", "North End", "North Station", "Northeastern University", "South Station", "Theatre Distrcit", "West End"])
             .range(["#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4"])
         const xScale = d3.scaleBand()
-            .domain(data.map(function (d) { return d.location; }))
+            .domain(data.map(function (d) { return d.source; }))
             .range([0, VIS_WIDTH])
             .padding(0.4);
         const yScale = d3.scaleLinear()
@@ -51,17 +57,55 @@ function buildPlots() {
             .range([VIS_HEIGHT, 0]);
 
         FRAME2.selectAll("bars")
-            .data(data)
+            .data(non_zero_rain)
             .enter()
-            .append("rect")
-            .attr("x", (d) => { return (xScale(d.location) + MARGINS.left); })
-            .attr("y", (d) => { return (yScale(d.rain) + MARGINS.top); })
-            .attr("height", (d) => { return (VIS_HEIGHT - yScale(d.rain)); })
-            .attr("width", xScale.bandwidth())
-            .style("fill", function (d) { return Barcolor(d.location) })
+            .append("line")
+            .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()/2); })
+            .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()/2); })
+            .attr("y1", VIS_HEIGHT)
+            .attr("y2", (d) => { return (yScale(d.rain)); })
+            // .attr("width", xScale.bandwidth())
+            // .style("fill", function (d) { return Barcolor(d.source) })
             .attr("class", "bar")
-            .attr("id", (d) => { return d.location });
+            .attr("id", (d) => { return d.source })
+            .attr("stroke", "black");
+        /*
+        FRAME2.selectAll("boxes")
+        .data(non_zero_rain)
+        .enter()
+        .append("rect")
+        .attr("x", function(d){return(xScale(d.source) + MARGINS.left)})
+        .attr("y", function(d){return(yScale(d.rain))})
+        .attr("height", function(d){return(q1[d.source]-median[d.source])})
+        .attr("width", xScale.bandwidth() )
+        .attr("stroke", "black")
+        .style("fill", "#69b3a2")
+        /*
+        .on("mouseover", function(event,d) {
+           div.transition()
+             .duration(200)
+             .style("opacity", .9);
+           div.html("Q3 : " + d.q3  + "<br/> Median: " + d.median + "<br/> Q1: " + d.q1)
+             .style("left", (event.pageX) + "px")
+             .style("top", (event.pageY - 28) + "px");
+           })
+        .on("mouseout", function(d) {
+           div.transition()
+             .duration(500)
+             .style("opacity", 0);
+           }); */
 
+        jitterWidth = 30
+        FRAME2
+        .selectAll("indPoints")
+        .data(non_zero_rain)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d){return(xScale(d.source) + MARGINS.left + xScale.bandwidth()/2 - jitterWidth/2 + Math.random()*jitterWidth )})
+        .attr("cy", function(d){return(yScale(d.rain))})
+        .attr("r", 4)
+        .style("fill", "white")
+        .attr("stroke", "black")
 
         // add an xaxis to the vis
         FRAME2.append("g")
@@ -188,7 +232,7 @@ const FRAME3 = d3.select("#timeline")
                 "translate(" + margin.left + "," + margin.top + ")")
                 .attr("class", "frame");
 
-
+/*
 //Read the data
 d3.csv("data/price_data.csv").then(function(data) {
     
@@ -236,4 +280,4 @@ d3.csv("data/price_data.csv").then(function(data) {
     FRAME3.append("g")
             .call(d3.axisLeft(y));
 
-});
+}); */
