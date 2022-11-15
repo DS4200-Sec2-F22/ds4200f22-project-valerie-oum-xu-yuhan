@@ -51,11 +51,11 @@ function buildPlots() {
         q1 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.25), d => d.source)
         median = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.5), d => d.source)
         q3 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.75), d => d.source)
-        console.log(q1)
+        console.log(q1.get("Fenway"))
 
         const Barcolor = d3.scaleOrdinal()
             .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "HayMarket Square", "North End", "North Station", "Northeastern University", "South Station", "Theatre Distrcit", "West End"])
-            .range(["#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4", "#4682b4"])
+            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#ff0000", "#4b008", "#808000", "#cd853f"])
         const xScale = d3.scaleBand()
             .domain(data.map(function (d) { return d.source; }))
             .range([0, VIS_WIDTH])
@@ -64,6 +64,7 @@ function buildPlots() {
             .domain([0, d3.max(data, function (d) { return d.rain; }) + 1])
             .range([VIS_HEIGHT, 0]);
 
+        
         FRAME2.selectAll("bars")
             .data(non_zero_rain)
             .enter()
@@ -77,17 +78,29 @@ function buildPlots() {
             .attr("class", "bar")
             .attr("id", (d) => { return d.source })
             .attr("stroke", "black");
-        /*
+        
         FRAME2.selectAll("boxes")
         .data(non_zero_rain)
         .enter()
         .append("rect")
         .attr("x", function(d){return(xScale(d.source) + MARGINS.left)})
-        .attr("y", function(d){return(yScale(d.rain))})
-        .attr("height", function(d){return(q1[d.source]-median[d.source])})
+        .attr("y", function(d){return(MARGINS.top + yScale(q3.get(d.source)))})
+        .attr("height", function(d){return yScale(q1.get(d.source)) - yScale(q3.get(d.source))})
         .attr("width", xScale.bandwidth() )
+        .attr("position", "absolute")
         .attr("stroke", "black")
-        .style("fill", "#69b3a2")
+        .attr("class", "box")
+        .style("fill", function (d) { return Barcolor(d.source) })
+
+        FRAME2.selectAll("medianline").data(non_zero_rain)
+        .enter()
+        .append("line")
+        .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left); })
+        .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()); })
+        .attr("y1", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
+        .attr("y2", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
+        .style("stroke", "black")
+        .attr("class", "median")
         /*
         .on("mouseover", function(event,d) {
            div.transition()
@@ -101,8 +114,8 @@ function buildPlots() {
            div.transition()
              .duration(500)
              .style("opacity", 0);
-           }); */
-
+           });*/
+        /*
         jitterWidth = 30
         FRAME2
             .selectAll("indPoints")
@@ -112,8 +125,9 @@ function buildPlots() {
             .attr("cx", function (d) { return (xScale(d.source) + MARGINS.left + xScale.bandwidth() / 2 - jitterWidth / 2 + Math.random() * jitterWidth) })
             .attr("cy", function (d) { return (yScale(d.rain)) })
             .attr("r", 4)
-            .style("fill", "white")
-            .attr("stroke", "black")
+            .style("fill", "lightblue")
+            .attr("opacity", "0.5")
+            .attr("stroke", "black")*/
 
         // add an xaxis to the vis
         FRAME2.append("g")
@@ -148,7 +162,7 @@ function buildPlots() {
             ToolTip.style("opacity", 1);
         };
         function handleMousemove(event, d) {
-            ToolTip.html("Rain: " + d.rain + "<br>Location: " + d.location + "<br>Date: " + d.date)
+            ToolTip.html("Q1: " + q1.get(d.source) + "<br>Median: " + median.get(d.source) + "<br>Q3: " + q3.get(d.source))
                 .style("left", (event.pageX + 10) + "px") //add offset
                 // from mouse
                 .style("top", (event.pageY - 50) + "px");
@@ -157,19 +171,19 @@ function buildPlots() {
             ToolTip.style("opacity", 0);
         };
         //add event listeners
-        FRAME2.selectAll(".bar")
+        FRAME2.selectAll(".box")
             .on("mouseover", handleMouseover) //add event listeners
             .on("mousemove", handleMousemove)
             .on("mouseleave", handleMouseleave);
 
         //building Price vs. Rain -- scatterplot
         //find Max X & Y
-        const X_MAX = d3.max(data, (d) => { return parseInt(d.price); });
+        const X_MAX = d3.max(data, (d) => { return parseInt(d.rain); });
         console.log(X_MAX)
         const X_SCALE = d3.scaleLinear()
             .domain([0, X_MAX + 1])
             .range([0, VIS_WIDTH]);
-        const Y_MAX = d3.max(data, (d) => { return parseInt(d.rain); })
+        const Y_MAX = d3.max(data, (d) => { return parseInt(d.price); })
         console.log(Y_MAX)
         const Y_SCALE = d3.scaleLinear()
             .domain([0, Y_MAX + 1])
@@ -180,21 +194,21 @@ function buildPlots() {
         // make the x_axis 
         FRAME4.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
-            .call(d3.axisBottom(X_SCALE).ticks(50))
+            .call(d3.axisBottom(X_SCALE).ticks(20))
             .attr("font-size", "10px")
         // make the Y-axis 
         FRAME4.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-            .call(d3.axisLeft(Y_SCALE).ticks(50))
+            .call(d3.axisLeft(Y_SCALE).ticks(20))
             .attr("font-size", "10px");
         // append all the points that are read in from the file 
         Frame4Points = FRAME4.selectAll("points")
-            .data(data)
+            .data(non_zero_rain)
             .enter()
             .append("circle")
-            .attr("id", (d) => { return "(" + d.price + "," + d.rain + ")"; })
-            .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.price)); })
-            .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.rain)); })
+            .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
+            .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.rain)); })
+            .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.price)); })
             .attr("r", 1)
             .style("fill", function (d) { return Scattercolor1(d.destination) })
             .attr("class", "point");
