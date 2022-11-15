@@ -8,7 +8,7 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 const MAP_HEIGHT = 600;
 const MAP_WIDTH = 750;
 
-//Creating the frame for Barcha Location vs Rain Level
+//Creating the frame for  Location vs Rain Level
 const FRAME2 = d3.select("#right")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
@@ -16,21 +16,29 @@ const FRAME2 = d3.select("#right")
     .attr("class", "frame");
 
 
-    
+
 const LOCATION = [
-  {lat:42.34951908186938, long:-71.07961534089964, name:"Back Bay"},
-  {lat:42.35623840591134, long:-71.06958586081059, name:"Beacon Hill"},
-  {lat:42.350863440297815, long:-71.10536757955218, name:"Boston University"},
-  {lat:42.34044743062222, long:-71.08905397673476, name:"Northeastern University"},
-  {lat:42.346953317328285, long:-71.09236848084416, name:"Fenway"},
-  {lat:42.366433580982076, long:-71.06193200915563, name:"North Station"},
-  {lat:42.362918759655585, long:-71.05849212109845, name:"Haymarket Square"},
-  {lat:42.36518837689946, long:-71.05512527121255, name:"North End"},
-  {lat:42.35211128441916, long:-71.05539853661827, name:"South Station"},
-  {lat:42.351855312673585, long:-71.06422972185284, name:"Theatre District"},
-  {lat:42.35596536121418, long:-71.05502481285681, name:"Financial District"},
-  {lat:42.36519766224288, long:-71.06450910516438, name:"West End"}
+    { lat: 42.34951908186938, long: -71.07961534089964, name: "Back Bay" },
+    { lat: 42.35623840591134, long: -71.06958586081059, name: "Beacon Hill" },
+    { lat: 42.350863440297815, long: -71.10536757955218, name: "Boston University" },
+    { lat: 42.34044743062222, long: -71.08905397673476, name: "Northeastern University" },
+    { lat: 42.346953317328285, long: -71.09236848084416, name: "Fenway" },
+    { lat: 42.366433580982076, long: -71.06193200915563, name: "North Station" },
+    { lat: 42.362918759655585, long: -71.05849212109845, name: "Haymarket Square" },
+    { lat: 42.36518837689946, long: -71.05512527121255, name: "North End" },
+    { lat: 42.35211128441916, long: -71.05539853661827, name: "South Station" },
+    { lat: 42.351855312673585, long: -71.06422972185284, name: "Theatre District" },
+    { lat: 42.35596536121418, long: -71.05502481285681, name: "Financial District" },
+    { lat: 42.36519766224288, long: -71.06450910516438, name: "West End" }
 ]
+
+//Creating frame for Barchat for Location vs. Rain Level
+const FRAME4 = d3.select("#leftrow")
+    .append("svg")
+    .attr("height", FRAME_HEIGHT)
+    .attr("width", FRAME_WIDTH)
+    .attr("class", "frame");
+
 
 //Build Bar chart
 function buildPlots() {
@@ -39,10 +47,10 @@ function buildPlots() {
         //checking the data prints to the console
         console.log(data)
 
-        non_zero_rain = data.filter(function(d) {return d.rain != 0});
-        q1 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.25), d => d.source)
-        median = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.5), d => d.source)
-        q3 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function(x){return x.rain}), 0.75), d => d.source)
+        non_zero_rain = data.filter(function (d) { return d.rain != 0 });
+        q1 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.25), d => d.source)
+        median = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.5), d => d.source)
+        q3 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.75), d => d.source)
         console.log(q1)
 
         const Barcolor = d3.scaleOrdinal()
@@ -60,8 +68,8 @@ function buildPlots() {
             .data(non_zero_rain)
             .enter()
             .append("line")
-            .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()/2); })
-            .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()/2); })
+            .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth() / 2); })
+            .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth() / 2); })
             .attr("y1", VIS_HEIGHT)
             .attr("y2", (d) => { return (yScale(d.rain)); })
             // .attr("width", xScale.bandwidth())
@@ -97,15 +105,15 @@ function buildPlots() {
 
         jitterWidth = 30
         FRAME2
-        .selectAll("indPoints")
-        .data(non_zero_rain)
-        .enter()
-        .append("circle")
-        .attr("cx", function(d){return(xScale(d.source) + MARGINS.left + xScale.bandwidth()/2 - jitterWidth/2 + Math.random()*jitterWidth )})
-        .attr("cy", function(d){return(yScale(d.rain))})
-        .attr("r", 4)
-        .style("fill", "white")
-        .attr("stroke", "black")
+            .selectAll("indPoints")
+            .data(non_zero_rain)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) { return (xScale(d.source) + MARGINS.left + xScale.bandwidth() / 2 - jitterWidth / 2 + Math.random() * jitterWidth) })
+            .attr("cy", function (d) { return (yScale(d.rain)) })
+            .attr("r", 4)
+            .style("fill", "white")
+            .attr("stroke", "black")
 
         // add an xaxis to the vis
         FRAME2.append("g")
@@ -116,11 +124,11 @@ function buildPlots() {
 
         // rotate x axis text
         FRAME2.select("g.xAxis")
-        .selectAll("text")
+            .selectAll("text")
             .style("text-anchor", "end")
             .style("font-size", "9.5px")
             .attr("transform", "rotate(-60)");
-          
+
 
         // add an yaxis to the vis
         FRAME2.append("g")
@@ -139,98 +147,138 @@ function buildPlots() {
         function handleMouseover(event, d) {
             ToolTip.style("opacity", 1);
         };
-        function handleMousemove(event,d){
+        function handleMousemove(event, d) {
             ToolTip.html("Rain: " + d.rain + "<br>Location: " + d.location + "<br>Date: " + d.date)
-            .style("left", (event.pageX + 10) + "px") //add offset
-                                                        // from mouse
-            .style("top", (event.pageY - 50) + "px"); 
-         };
-         function handleMouseleave(event,d){
-            ToolTip.style("opacity",0);
-         };
-         //add event listeners
-         FRAME2.selectAll(".bar")
-               .on("mouseover", handleMouseover) //add event listeners
-               .on("mousemove", handleMousemove)
-               .on("mouseleave", handleMouseleave); 
+                .style("left", (event.pageX + 10) + "px") //add offset
+                // from mouse
+                .style("top", (event.pageY - 50) + "px");
+        };
+        function handleMouseleave(event, d) {
+            ToolTip.style("opacity", 0);
+        };
+        //add event listeners
+        FRAME2.selectAll(".bar")
+            .on("mouseover", handleMouseover) //add event listeners
+            .on("mousemove", handleMousemove)
+            .on("mouseleave", handleMouseleave);
+
+        //building Price vs. Rain -- scatterplot
+        //find Max X & Y
+        const X_MAX = d3.max(data, (d) => { return parseInt(d.price); });
+        console.log(X_MAX)
+        const X_SCALE = d3.scaleLinear()
+            .domain([0, X_MAX + 1])
+            .range([0, VIS_WIDTH]);
+        const Y_MAX = d3.max(data, (d) => { return parseInt(d.rain); })
+        console.log(Y_MAX)
+        const Y_SCALE = d3.scaleLinear()
+            .domain([0, Y_MAX + 1])
+            .range([VIS_HEIGHT, 0]);
+        const Scattercolor1 = d3.scaleOrdinal()
+            .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "Haymarket Square", "North End", "Northeastern University", "South Station", "Theatre District", "West End"])
+            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#9acd32", "#4b008", "#808000", "#cd853f"])
+        // make the x_axis 
+        FRAME4.append("g")
+            .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+            .call(d3.axisBottom(X_SCALE).ticks(50))
+            .attr("font-size", "10px")
+        // make the Y-axis 
+        FRAME4.append("g")
+            .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+            .call(d3.axisLeft(Y_SCALE).ticks(50))
+            .attr("font-size", "10px");
+        // append all the points that are read in from the file 
+        Frame4Points = FRAME4.selectAll("points")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("id", (d) => { return "(" + d.price + "," + d.rain + ")"; })
+            .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.price)); })
+            .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.rain)); })
+            .attr("r", 1)
+            .style("fill", function (d) { return Scattercolor1(d.destination) })
+            .attr("class", "point");
 
     });
+    
 
     // Drawing the map of Boston
-    var projection = d3.geoMercator()
-                        .scale(200000)
-                        .precision(.1)
-                        .center([-71.06161620932242, 42.361975036613735])
-                        .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
-    
-    var path = d3.geoPath()
-                .projection(projection);
-    
-    var svg = d3.select("#left").append("svg")
-                .attr("width", MAP_WIDTH)
-                .attr("height", MAP_HEIGHT); 
-    var g = svg.append("g");
+    let projection = d3.geoMercator()
+        .scale(200000)
+        .precision(.1)
+        .center([-71.06161620932242, 42.361975036613735])
+        .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
+
+    let path = d3.geoPath()
+        .projection(projection);
+
+    let svg = d3.select("#left").append("svg")
+        .attr("width", MAP_WIDTH)
+        .attr("height", MAP_HEIGHT);
+    let g = svg.append("g");
     // Load world shape
     d3.json("data/Boston.json")
-    .then(data => {
-      // data.features = data.features.filter( function(d){return d.properties.name=="USA"} );
-      // console.log(data.features);
+        .then(data => {
+            /*
+            data.features = data.features.filter( function(d){return d.properties.name=="USA"} );
+            // console.log(data.features);
+            */
 
-      // Draw the map
-      
-      g.selectAll("path")
-          .data(data.features)
-          .enter()
-          .append("path")
-            .attr("fill", "lightblue")
-            .attr("d", path)
-          .style("stroke", "black")
-          .style("opacity", .3);
+            // Draw the map
 
-      svg.selectAll("myCircles")
-        .data(LOCATION)
-        .enter()
-          .append("circle")
-          .attr("cx", function(d){ return projection([d.long, d.lat])[0] })
-          .attr("cy", function(d){ return projection([d.long, d.lat])[1] })
-          .attr("r", 4)
-          .attr("class", "circle")
-          .attr("id", (d) => { return d.name });
+            g.selectAll("path")
+                .data(data.features)
+                .enter()
+                .append("path")
+                .attr("fill", "lightblue")
+                .attr("d", path)
+                .style("stroke", "black")
+                .style("opacity", .3);
 
-  });
+            svg.selectAll("myCircles")
+                .data(LOCATION)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return projection([d.long, d.lat])[0] })
+                .attr("cy", function (d) { return projection([d.long, d.lat])[1] })
+                .attr("r", 4)
+                .attr("class", "circle")
+                .attr("id", (d) => { return d.name });
 
-    
-};
+        });
+
+
+}
 
 buildPlots();
 
 
-const margin = {top:20, right: 20, bottom: 30, left: 50};
+const margin = { top: 20, right: 20, bottom: 30, left: 50 };
 const width = 960 - margin.left - margin.right;
 const height = 500 - margin.top - margin.bottom;
 
 // parse the date / time
-var parseTime = d3.timeParse("%y-%b-%d");
+let parseTime = d3.timeParse("%y-%b-%d");
 
 // set the ranges
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
+let x = d3.scaleTime().range([0, width]);
+let y = d3.scaleLinear().range([height, 0]);
 
 // define the area
-var area = d3.area() 
-     .x(function(d) { return x(d.date); })
-     .y0(height)
-     .y1(function(d) { return y(d.price); });
+let area = d3.area()
+    .x(function (d) { return x(d.date); })
+    .y0(height)
+    .y1(function (d) { return y(d.price); });
 
 
 const FRAME3 = d3.select("#timeline")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")")
-                .attr("class", "frame");
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")")
+    .attr("class", "frame");
 
 /*
 //Read the data
