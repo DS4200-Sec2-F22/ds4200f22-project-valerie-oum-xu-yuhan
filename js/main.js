@@ -149,6 +149,9 @@ function buildPlots() {
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
             .call(d3.axisLeft(yScale))
             .attr("font-size", "10px");
+        
+        //Add Interaction to Boxplot
+        FRAME2.selectAll()
 
 
         //ToolTip
