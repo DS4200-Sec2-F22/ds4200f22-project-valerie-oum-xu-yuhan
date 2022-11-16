@@ -90,6 +90,7 @@ function buildPlots() {
         .attr("position", "absolute")
         .attr("stroke", "black")
         .attr("class", "box")
+        .attr("id", (d) => { return d.source; })
         .style("fill", function (d) { return Barcolor(d.source) })
 
         FRAME2.selectAll("medianline").data(non_zero_rain)
@@ -210,7 +211,8 @@ function buildPlots() {
             .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.rain)); })
             .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.price)); })
             .attr("r", 1)
-            .style("fill", function (d) { return Scattercolor1(d.destination) })
+            .style("fill", function (d) { return Scattercolor1(d.source) })
+            .attr("id", (d) => {return d.source})
             .attr("class", "point");
 
     });
