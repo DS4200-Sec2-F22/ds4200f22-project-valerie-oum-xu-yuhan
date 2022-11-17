@@ -8,6 +8,7 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 const MAP_HEIGHT = 600;
 const MAP_WIDTH = 750;
 
+
 //Creating the frame for  Location vs Rain Level
 const FRAME2 = d3.select("#right")
     .append("svg")
@@ -47,6 +48,9 @@ function buildPlots() {
         //checking the data prints to the console
         console.log(data)
 
+        const secGroup = new Set(data.map(d => d.source))
+
+
         non_zero_rain = data.filter(function (d) { return d.rain != 0 });
         q1 = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.25), d => d.source)
         median = d3.rollup(non_zero_rain, v => d3.quantile(v.map(function (x) { return x.rain }), 0.5), d => d.source)
@@ -54,8 +58,8 @@ function buildPlots() {
         console.log(q1.get("Fenway"))
 
         const Barcolor = d3.scaleOrdinal()
-            .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "HayMarket Square", "North End", "North Station", "Northeastern University", "South Station", "Theatre Distrcit", "West End"])
-            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#ff0000", "#4b008", "#808000", "#cd853f"])
+                            .domain(secGroup)
+                            .range(d3.schemeSet3);
         const xScale = d3.scaleBand()
             .domain(data.map(function (d) { return d.source; }))
             .range([0, VIS_WIDTH])
@@ -280,6 +284,7 @@ function buildPlots() {
         //building Price vs. Rain -- scatterplot
 
         const allGroup = new Set(data.map(d => d.destination))
+
         // add the options to the button
         d3.select("#selectButton")
             .selectAll('myOptions')
@@ -290,7 +295,7 @@ function buildPlots() {
             .attr("value", function (d) { return d; }) // corresponding value returned by the button
         const myColor = d3.scaleOrdinal()
             .domain(allGroup)
-            .range(d3.schemeSet2);
+            .range(d3.schemeSet3);
         // Add X axis 
          const x = d3.scaleLinear()
                 .domain(d3.extent(data, function(d) { return d.rain; }))
@@ -306,8 +311,8 @@ function buildPlots() {
                 .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
                 .call(d3.axisLeft(y));
         const Scattercolor1 = d3.scaleOrdinal()
-                            .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "Haymarket Square", "North End", "Northeastern University", "South Station", "Theatre District", "West End"])
-                            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#9acd32", "#4b008", "#808000", "#cd853f"]);
+                            .domain(secGroup)
+                            .range(d3.schemeSet3);
          // append all the points that are read in from the file 
         const Frame4Points = FRAME4.selectAll("points")
                                     .data(data.filter(function(d){return d.destination=="Northeastern University"}))
