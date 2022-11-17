@@ -64,7 +64,7 @@ function buildPlots() {
             .domain([0, d3.max(data, function (d) { return d.rain; }) + 1])
             .range([VIS_HEIGHT, 0]);
 
-        
+
         FRAME2.selectAll("bars")
             .data(non_zero_rain)
             .enter()
@@ -78,30 +78,30 @@ function buildPlots() {
             .attr("class", "bar")
             .attr("id", (d) => { return d.source })
             .attr("stroke", "black");
-        
+
         FRAME2.selectAll("boxes")
-        .data(non_zero_rain)
-        .enter()
-        .append("rect")
-        .attr("x", function(d){return(xScale(d.source) + MARGINS.left)})
-        .attr("y", function(d){return(MARGINS.top + yScale(q3.get(d.source)))})
-        .attr("height", function(d){return yScale(q1.get(d.source)) - yScale(q3.get(d.source))})
-        .attr("width", xScale.bandwidth() )
-        .attr("position", "absolute")
-        .attr("stroke", "black")
-        .attr("class", "box")
-        .attr("id", (d) => { return d.source; })
-        .style("fill", function (d) { return Barcolor(d.source) })
+            .data(non_zero_rain)
+            .enter()
+            .append("rect")
+            .attr("x", function (d) { return (xScale(d.source) + MARGINS.left) })
+            .attr("y", function (d) { return (MARGINS.top + yScale(q3.get(d.source))) })
+            .attr("height", function (d) { return yScale(q1.get(d.source)) - yScale(q3.get(d.source)) })
+            .attr("width", xScale.bandwidth())
+            .attr("position", "absolute")
+            .attr("stroke", "black")
+            .attr("class", "box")
+            .attr("id", (d) => { return d.source; })
+            .style("fill", function (d) { return Barcolor(d.source) })
 
         FRAME2.selectAll("medianline").data(non_zero_rain)
-        .enter()
-        .append("line")
-        .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left); })
-        .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()); })
-        .attr("y1", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
-        .attr("y2", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
-        .style("stroke", "black")
-        .attr("class", "median")
+            .enter()
+            .append("line")
+            .attr("x1", (d) => { return (xScale(d.source) + MARGINS.left); })
+            .attr("x2", (d) => { return (xScale(d.source) + MARGINS.left + xScale.bandwidth()); })
+            .attr("y1", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
+            .attr("y2", (d) => { return MARGINS.top + yScale(median.get(d.source)); })
+            .style("stroke", "black")
+            .attr("class", "median")
         /*
         .on("mouseover", function(event,d) {
            div.transition()
@@ -150,10 +150,107 @@ function buildPlots() {
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
             .call(d3.axisLeft(yScale))
             .attr("font-size", "10px");
-        
-        //Add Interaction to Boxplot
-        FRAME2.selectAll()
 
+        //Add Interaction to Boxplot
+        //  FRAME2.selectAll(".box").on("click", selectBox);
+
+        //filter data: Get a subset of the data based on the source 
+        function getFilteredData(data, Selectedsource) {
+            return data.filter(function (d) { return d.source === Selectedsource && d.rain != 0 });
+        }
+
+        //   console.log(getFilteredData(data,'Fenway'));
+
+        // const non_zero_rainSource = data.filter(function (d,source) { return d.source == source && d.rain !=0 });
+        //  console.log(non_zero_rainSource);
+        //function to handl selection of boxes
+        function selectBox(Box) {
+            //get source
+            let ClickedBoxSource = document.getElementById(Box.target.id);
+            console.log(ClickedBoxSource);
+            if (ClickedBoxSource.classList.contains("selected")) {
+                ClickedBoxSource.classList.remove("selected");
+            }
+            else {
+                ClickedBoxSource.classList.add("selected");
+
+                console.log(ClickedBoxSource);
+                return ClickedBoxSource;
+            }
+
+            // filter data to just source
+            // populate graph with just that points of that source
+            // use same code for scatteplot just with filtered data
+            //user clicks box
+        }
+
+
+        //add listener to all Boxes
+        FRAME2.selectAll(".box").on("click", selectBox);
+        //enter Handles appending new points to graph
+        function enterPoints(data) {
+            //new graph 
+            const X_MAX = d3.max(data, (d) => { return parseInt(d.rain); });
+            console.log(X_MAX)
+            const X_SCALE = d3.scaleLinear()
+                .domain([0, X_MAX + 1])
+                .range([0, VIS_WIDTH]);
+            const Y_MAX = d3.max(data, (d) => { return parseInt(d.price); })
+            console.log(Y_MAX)
+            const Y_SCALE = d3.scaleLinear()
+                .domain([0, Y_MAX + 1])
+                .range([VIS_HEIGHT, 0]);
+            const Scattercolor1 = d3.scaleOrdinal()
+                .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "Haymarket Square", "North End", "Northeastern University", "South Station", "Theatre District", "West End"])
+                .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#9acd32", "#4b008", "#808000", "#cd853f"])
+            FRAME4.selectAll(".point")
+                .data(data)
+                .enter().append("path")
+                .attr("class", "point")
+                .append("circle")
+                .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
+                .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.rain)); })
+                .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.price)); })
+                .attr("r", 1)
+                .style("fill", function (d) { return Scattercolor1(d.source) })
+                .attr("class", "point");
+            // make the x_axis 
+            FRAME4.append("g")
+                .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+                .call(d3.axisBottom(X_SCALE).ticks(20))
+                .attr("font-size", "10px")
+            // make the Y-axis 
+            FRAME4.append("g")
+                .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+                .call(d3.axisLeft(Y_SCALE).ticks(20))
+                .attr("font-size", "10px");
+        }
+
+        //function removes points that are no longer needed
+        function exitPoints(data) {
+            FRAME4.selectAll(".point")
+                .data(data)
+                .exit()
+                .remove();
+        }
+        // update existing values based on change in data
+        function updatePoints(data) {
+            FRAME4.selectAll("points")
+                .data(data)
+                .transition()
+                .attr("transform", function (d) { return "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")" })
+
+        }
+
+        //change entire scatterplot when selection changes -- updates points, adds points, removes non neededpoints
+        selectBox.onChange = function (e) {
+            const source = selectBox(e);
+            const newData = getFilteredData(data, source);
+         
+            updatePoints(newData);
+            enterPoints(newData);
+            exitPoints(newData);
+        }
 
         //ToolTip
         const ToolTip = d3.select(("#right"))
@@ -181,6 +278,7 @@ function buildPlots() {
             .on("mouseleave", handleMouseleave);
 
         //building Price vs. Rain -- scatterplot
+
         //find Max X & Y
         const X_MAX = d3.max(data, (d) => { return parseInt(d.rain); });
         console.log(X_MAX)
@@ -215,11 +313,11 @@ function buildPlots() {
             .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.price)); })
             .attr("r", 1)
             .style("fill", function (d) { return Scattercolor1(d.source) })
-            .attr("id", (d) => {return d.source})
+            //   .attr("id", (d) => { return d.source })
             .attr("class", "point");
 
     });
-    
+
 
     // Drawing the map of Boston
     let projection = d3.geoMercator()
