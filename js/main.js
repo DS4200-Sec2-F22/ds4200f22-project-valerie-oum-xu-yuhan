@@ -279,42 +279,73 @@ function buildPlots() {
 
         //building Price vs. Rain -- scatterplot
 
-        //find Max X & Y
-        const X_MAX = d3.max(data, (d) => { return parseInt(d.rain); });
-        console.log(X_MAX)
-        const X_SCALE = d3.scaleLinear()
-            .domain([0, X_MAX + 1])
-            .range([0, VIS_WIDTH]);
-        const Y_MAX = d3.max(data, (d) => { return parseInt(d.price); })
-        console.log(Y_MAX)
-        const Y_SCALE = d3.scaleLinear()
-            .domain([0, Y_MAX + 1])
-            .range([VIS_HEIGHT, 0]);
-        const Scattercolor1 = d3.scaleOrdinal()
-            .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "Haymarket Square", "North End", "Northeastern University", "South Station", "Theatre District", "West End"])
-            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#9acd32", "#4b008", "#808000", "#cd853f"])
-        // make the x_axis 
-        FRAME4.append("g")
-            .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
-            .call(d3.axisBottom(X_SCALE).ticks(20))
-            .attr("font-size", "10px")
-        // make the Y-axis 
-        FRAME4.append("g")
-            .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-            .call(d3.axisLeft(Y_SCALE).ticks(20))
-            .attr("font-size", "10px");
-        // append all the points that are read in from the file 
-        Frame4Points = FRAME4.selectAll("points")
-            .data(non_zero_rain)
+        const allGroup = new Set(data.map(d => d.destination))
+        // add the options to the button
+        d3.select("#selectButton")
+            .selectAll('myOptions')
+            .data(allGroup)
             .enter()
-            .append("circle")
+            .append('option')
+            .text(function (d) { return d; }) // text showed in the menu
+            .attr("value", function (d) { return d; }) // corresponding value returned by the button
+        const myColor = d3.scaleOrdinal()
+            .domain(allGroup)
+            .range(d3.schemeSet2);
+        // Add X axis 
+         const x = d3.scaleLinear()
+                .domain(d3.extent(data, function(d) { return d.rain; }))
+                .range([ 0, VIS_WIDTH ]);
+        FRAME4.append("g")
+                .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+                .call(d3.axisBottom(x).ticks(20));
+        // Add Y axis
+        const y = d3.scaleLinear()
+                    .domain([0, d3.max(data, function(d) { return +d.price; })])
+                    .range([VIS_HEIGHT, 0 ]);
+        FRAME4.append("g")
+                .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+                .call(d3.axisLeft(y));
+        const Scattercolor1 = d3.scaleOrdinal()
+                            .domain(["Back Bay", "Beacon Hill", "Boston University", "Fenway", "Financial District", "Haymarket Square", "North End", "Northeastern University", "South Station", "Theatre District", "West End"])
+                            .range(["#2e8b57", "#ff7f50", "#40e0d0", "#bc8f8f", "#008b8b", "#663399", "#d2b48c", "#9acd32", "#4b008", "#808000", "#cd853f"]);
+         // append all the points that are read in from the file 
+        const Frame4Points = FRAME4.selectAll("points")
+                                    .data(data.filter(function(d){return d.destination=="Northeastern University"}))
+                                    .enter()
+                                    .append('g')
+                                    .append("circle")
+                                    .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
+                                    .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
+                                    .attr("cy", (d) => { return (MARGINS.top + y(+d.price)); })
+                                    .attr("r", 1) 
+                                    .style("fill", function (d) { return myColor("Northeastern University") })
+                                    .attr("id", (d) => {return d.source})
+                                    .attr("class", "point");
+
+        // A function that update the chart
+        function update(selectedGroup) {
+
+        // Create new data with the selection
+        const dataFilter = data.filter(function(d){return d.destination==selectedGroup})
+
+        // Give these new data to update line
+        Frame4Points
+            .data(dataFilter)
+            .transition()
             .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
-            .attr("cx", (d) => { return (MARGINS.left + X_SCALE(d.rain)); })
-            .attr("cy", (d) => { return (MARGINS.top + Y_SCALE(d.price)); })
+            .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
+            .attr("cy", (d) => { return (MARGINS.top + y(+d.price)); })
             .attr("r", 1)
-            .style("fill", function (d) { return Scattercolor1(d.source) })
-            //   .attr("id", (d) => { return d.source })
-            .attr("class", "point");
+            .attr("stroke", function(d){ return Scattercolor1(selectedGroup) })
+    }
+
+        // When the button is changed, run the updateChart function
+        d3.select("#selectButton").on("change", function(event,d) {
+            // recover the option that has been chosen
+            const selectedOption = d3.select(this).property("value")
+            // run the updateChart function with this selected option
+            update(selectedOption)
+     })        
 
     });
 
