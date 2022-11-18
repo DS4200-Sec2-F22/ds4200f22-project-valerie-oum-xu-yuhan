@@ -10,7 +10,7 @@ const MAP_WIDTH = 750;
 
 
 //Creating the frame for  Location vs Rain Level
-const FRAME2 = d3.select("#right")
+const FRAME2 = d3.select("#barchart")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
@@ -34,7 +34,7 @@ const LOCATION = [
 ]
 
 //Creating frame for Barchat for Location vs. Rain Level
-const FRAME4 = d3.select("#leftrow")
+const FRAME4 = d3.select("#scatterplot")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
@@ -144,7 +144,7 @@ function buildPlots() {
             .attr("font-size", "10px");
 
         //ToolTip
-        const ToolTip = d3.select(("#right"))
+        const ToolTip = d3.select(("#barchart"))
             .append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
