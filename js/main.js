@@ -1,12 +1,10 @@
 // First, we need a frame
-const MARGINS = { left: 40, right: 60, top: 0, bottom: 100 };
+const MARGINS = { left: 40, right: 60, top: 10, bottom: 100 };
 
 const FRAME_HEIGHT = 600;
-const FRAME_WIDTH = 750;
+const FRAME_WIDTH = 800;
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
-const MAP_HEIGHT = 600;
-const MAP_WIDTH = 750;
 
 
 //Creating the frame for  Location vs Rain Level
@@ -58,8 +56,8 @@ function buildPlots() {
         console.log(q1.get("Fenway"))
 
         const Barcolor = d3.scaleOrdinal()
-                            .domain(secGroup)
-                            .range(d3.schemeSet3);
+            .domain(secGroup)
+            .range(d3.schemeSet3);
         const xScale = d3.scaleBand()
             .domain(data.map(function (d) { return d.source; }))
             .range([0, VIS_WIDTH])
@@ -82,6 +80,7 @@ function buildPlots() {
             { source: "Financial District" },
             { source: "West End" }
         ]
+
 
 
         FRAME2.selectAll("bars")
@@ -136,12 +135,23 @@ function buildPlots() {
             .style("font-size", "9.5px")
             .attr("transform", "rotate(-60)");
 
+        FRAME2.append("text")
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(" + (VIS_WIDTH * 2.5 / 5) + "," + (FRAME_HEIGHT) + ")")
+            .text("Location(Source)");
 
         // add an yaxis to the vis
         FRAME2.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
             .call(d3.axisLeft(yScale))
             .attr("font-size", "10px");
+
+        FRAME2.append("text")
+            .style("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .attr("y", (MARGINS.left))
+            .attr("x", FRAME_HEIGHT)
+            .text("Rain Level");
 
         //ToolTip
         const ToolTip = d3.select(("#barchart"))
@@ -177,21 +187,32 @@ function buildPlots() {
             .range(d3.schemeSet3);
         // Add X axis 
         const x = d3.scaleLinear()
-                .domain(d3.extent(data, function(d) { return d.rain; }))
-                .range([ 0, VIS_WIDTH ]);
+            .domain(d3.extent(data, function (d) { return d.rain; }))
+            .range([0, VIS_WIDTH]);
         FRAME4.append("g")
-                .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
-                .call(d3.axisBottom(x).ticks(20));
+            .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+            .call(d3.axisBottom(x).ticks(20));
         // Add Y axis
         const y = d3.scaleLinear()
-                    .domain([0, d3.max(data, function(d) { return +d.surge_multiplier; })])
-                    .range([VIS_HEIGHT, 0 ]);
+            .domain([0, d3.max(data, function (d) { return +d.surge_multiplier; })])
+            .range([VIS_HEIGHT, 0]);
         FRAME4.append("g")
-                .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-                .call(d3.axisLeft(y));
+            .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+            .call(d3.axisLeft(y));
+        FRAME4.append("text")
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(" + (VIS_WIDTH * 2.5 / 5) + "," + (FRAME_HEIGHT) + ")")
+            .text("Rain Level");
+        FRAME4.append("text")
+            .style("text-anchor", "left")
+            .attr("transform", "rotate(-90)")
+            .attr("y", (MARGINS.left))
+            .attr("x", FRAME_HEIGHT )
+            .text("Price ($US Dollar)");
+
         const Scattercolor1 = d3.scaleOrdinal()
-                            .domain(secGroup)
-                            .range(d3.schemeSet3);
+            .domain(secGroup)
+            .range(d3.schemeSet3);
         // add the options to the button
         /*
         const Frame4Points = FRAME4.selectAll("points")
@@ -221,25 +242,21 @@ function buildPlots() {
                 ClickedBoxSource.classList.add("selected");
                 console.log(ClickedBoxSource);
                 FRAME4.selectAll("points")
-                                .data(non_zero_rain.filter((d) => {return d.source == ClickedBoxSource.id}))
-                                    .enter()
-                                    .append("circle")
-                                    .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
-                                    .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
-                                    .attr("cy", (d) => { return (MARGINS.top + y(+d.surge_multiplier)); })
-                                    .attr("r", 2)
-                                    .attr("opacity", 0.7)
-                                    .style("fill", function (d) { return Scattercolor1(d.source)})
-                                    //.attr("id", (d) => {return d.source})
-                                    .attr("class", (d) => { return ("point" + d.source.split(" ").join("")); });
-                
-            }
-        // add the options to the button
-        
+                    .data(non_zero_rain.filter((d) => { return d.source == ClickedBoxSource.id }))
+                    .enter()
+                    .append("circle")
+                    .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
+                    .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
+                    .attr("cy", (d) => { return (MARGINS.top + y(+d.surge_multiplier)); })
+                    .attr("r", 2)
+                    .attr("opacity", 0.7)
+                    .style("fill", function (d) { return Scattercolor1(d.source) })
+                    //.attr("id", (d) => {return d.source})
+                    .attr("class", (d) => { return ("point" + d.source.split(" ").join("")); });
 
-            // filter data to just source
-            // populate graph with just that points of that source
-            // use same code for scatteplot just with filtered data
+
+
+            }
             return ClickedBoxSource;
         }
 

@@ -2,20 +2,17 @@ body {
     font-family: Arial;
 }
 
-h1, h2, h3 {
+h1, h2 {
     text-align: center;
 }
-.paragraph{
+h3 {
+    text-align: left;
+}
+.text, .barchartDescription,.scatterplotDescription{
     text-align: justify;
     justify-content: center;
 }
 
-.column1 {
-    flex: 50%;
-}
-.row1 {
-    flex: 50%;
-}
 .bars{
     fill: #4682b4;
 }
@@ -23,8 +20,7 @@ h1, h2, h3 {
 .column {
     display: flex;
     flex-direction: column;
-  
-    padding: 15px;
+    padding: 50px;
     flex: 50%;
 }
 
@@ -33,8 +29,7 @@ h1, h2, h3 {
     display: flex;
     flex: 50%;
     flex-direction: row;
-   
-    padding: 15px;
+    padding: 50px;
 }
 
 .tooltip {
