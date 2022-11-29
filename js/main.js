@@ -149,8 +149,8 @@ function buildPlots() {
         FRAME2.append("text")
             .style("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .attr("y", (MARGINS.left))
-            .attr("x", FRAME_HEIGHT)
+            .attr("y", (MARGINS.left / 3))
+            .attr("x", -FRAME_HEIGHT/2)
             .text("Rain Level");
 
         //ToolTip
@@ -194,7 +194,7 @@ function buildPlots() {
             .call(d3.axisBottom(x).ticks(20));
         // Add Y axis
         const y = d3.scaleLinear()
-            .domain([0, d3.max(data, function (d) { return +d.surge_multiplier; })])
+            .domain([0, d3.max(data, function (d) { return +d.price; })])
             .range([VIS_HEIGHT, 0]);
         FRAME4.append("g")
             .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
@@ -206,27 +206,14 @@ function buildPlots() {
         FRAME4.append("text")
             .style("text-anchor", "left")
             .attr("transform", "rotate(-90)")
-            .attr("y", (MARGINS.left))
-            .attr("x", FRAME_HEIGHT )
+            .attr("y", (MARGINS.left/3))
+            .attr("x", -FRAME_HEIGHT/2 )
             .text("Price ($US Dollar)");
 
         const Scattercolor1 = d3.scaleOrdinal()
             .domain(secGroup)
             .range(d3.schemeSet3);
         // add the options to the button
-        /*
-        const Frame4Points = FRAME4.selectAll("points")
-                                    .data(non_zero_rain)
-                                    .enter()
-                                    .append("circle")
-                                    .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
-                                    .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
-                                    .attr("cy", (d) => { return (MARGINS.top + y(+d.price)); })
-                                    .attr("r", 2)
-                                    .attr("opacity", 0.7)
-                                    .style("fill", function (d) { return myColor(d.source) })
-                                    //.attr("id", (d) => {return d.source})
-                                    .attr("class", "point");*/
 
         // A function that update the chart
         function selectBox(box) {
@@ -247,14 +234,12 @@ function buildPlots() {
                     .append("circle")
                     .attr("id", (d) => { return "(" + d.rain + "," + d.price + ")"; })
                     .attr("cx", (d) => { return (MARGINS.left + x(d.rain)); })
-                    .attr("cy", (d) => { return (MARGINS.top + y(+d.surge_multiplier)); })
-                    .attr("r", 2)
+                    .attr("cy", (d) => { return (MARGINS.top + y(+d.price)); })
+                    .attr("r", 4)
                     .attr("opacity", 0.7)
                     .style("fill", function (d) { return Scattercolor1(d.source) })
                     //.attr("id", (d) => {return d.source})
                     .attr("class", (d) => { return ("point" + d.source.split(" ").join("")); });
-
-
 
             }
             return ClickedBoxSource;
