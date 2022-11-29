@@ -1,0 +1,61 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:07.609 --> 00:00:12.200
+The first visualization that we have to show
+is a boxplot.
+
+00:00:12.200 --> 00:00:17.000
+This boxplot is showing the distribution of
+rain levels for all source locations.
+
+00:00:17.000 --> 00:00:23.369
+Each source location represents where the
+user is when they are ordering an uber or
+
+00:00:23.369 --> 00:00:24.369
+lyft.
+
+00:00:24.369 --> 00:00:29.900
+These locations are Back Bay, North Station,
+North End, Haymarket Square, West End, Beacon
+
+00:00:29.900 --> 00:00:36.660
+Hill, Financial District, Fenway, Northeastern
+University, Theatre District, Boston University,
+
+00:00:36.660 --> 00:00:37.989
+South Station.
+
+00:00:37.989 --> 00:00:40.670
+All of these source locations are in Boston.
+
+00:00:40.670 --> 00:00:50.300
+When a user selects hovers over any one of
+these boxes the quartile 1, median and quartile
+
+00:00:50.300 --> 00:00:53.690
+3 shows for that specific locations rain level.
+
+00:00:53.690 --> 00:00:56.500
+So it essentially shows distribution.
+
+00:00:56.500 --> 00:01:03.969
+If a user decides to select a box, down below
+the scatterplot that shows the price value
+
+00:01:03.969 --> 00:01:13.140
+versus the rain level appear on the scatterplot
+(instead of barchart).
+
+00:01:13.140 --> 00:01:23.250
+The user can select several boxes at a time
+and they all appear on the scatterplot.
+
+00:01:23.250 --> 00:01:30.049
+The user can also deselct.
+
+00:01:30.049 --> 00:01:40.689
+. . as well.
+
